@@ -16,7 +16,8 @@ For each plausibility relation, there is a corresponding epistemic indistinguish
 module Semantics where
 
 import Data.List ( nub )
-import Data.IntMap (IntMap, (!)) 
+import Data.IntMap (IntMap, (!), delete, restrictKeys, fromList) 
+import qualified Data.IntSet as Data.Intset
 
 import Syntax
 import Prelude hiding (pred)
@@ -76,5 +77,20 @@ update, radical, conservative :: PlausibilityModel -> KSBForm -> PlausibilityMod
 update m f = PlM newWorlds newRel newVal where
   newWorlds = [s | s <- worlds m, (m,s) |= f]
   newRel    = [(s,t) | (s,t) <- rel m, s `elem` newWorlds && t `elem` newWorlds]
-  newVal    = val m
+  newVal    = restrictKeys (val m) (Data.Intset.fromList newWorlds )
+
+radical m f = PlM newWorlds newRel newVal where
+  newWorlds  = worlds m
+  newRel     = [(s,t) | (s,t) <- rel m, s `elem` trueWorlds && t `elem` trueWorlds] 
+             ++ [(s,t) | (s,t) <- rel m, s `notElem` trueWorlds && t `notElem` trueWorlds]
+             ++ [(s,t) | s <- trueWorlds, t <- newWorlds, t `notElem` trueWorlds]
+  newVal     = val m
+  trueWorlds = [s | s <- worlds m, (m,s) |= f]
+
+conservative m f = PlM newWorlds newRel newVal where
+  newWorlds  = worlds m
+  newRel     = [(s,t) | (s,t) <- rel m, s `notElem` bestWorlds && t `notElem` bestWorlds] ++ [(s,t) | s <- bestWorlds, t <- newWorlds]
+  newVal     = val m
+  trueWorlds = [s | s <- worlds m, (m,s) |= f]
+  bestWorlds = [s | s <- trueWorlds, all (\t -> (s,t) `elem` rel m) newWorlds]
 \end{code}
