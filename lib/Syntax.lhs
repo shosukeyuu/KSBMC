@@ -22,10 +22,11 @@ top = dis (P 0) (Neg $ P 0)
 bot = Neg top
 \end{code}
 
-The \emph{conditional belief} and \emph{belief} operators can be defined as follows:
+The \emph{conditional belief}, \emph{belief}, and \emph{strong belief} operators can be defined as follows:
 \begin{align*}
 B^\phi \psi &:= \tilde K \phi \to \tilde K (\phi \wedge \Box(\phi \to \psi)) \ ; \\
-B \phi      &:= B ^\top \phi \ ,
+B \phi      &:= B ^\top \phi \ ; \\
+Sb \phi     &:= B \phi \wedge K(\phi \to \Box \phi) \ , 
 \end{align*}
 where $\tilde K \phi := \neg K \neg \phi$ is the dual of the knowledge operator.
 
@@ -35,4 +36,7 @@ cBel f g = (Neg . K . Neg) f `implies` (Neg . K . Neg) (f `Con` Box (f `implies`
 
 bel :: KSBForm -> KSBForm
 bel = cBel top
+
+sBel :: KSBForm -> KSBForm
+sBel f = Con (bel f) (K (f `implies` Box f))
 \end{code}
