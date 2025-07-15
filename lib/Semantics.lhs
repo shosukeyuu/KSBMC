@@ -32,6 +32,7 @@ type Valuation = IntMap [Proposition]
 type Relation = [(World,World)]
 
 data PlausibilityModel = PlM {worlds :: Universe, rel :: Relation, val :: Valuation}
+  deriving (Eq,Ord,Show)
 \end{code}
 To make the representation of the plausibility models more compact, the following functions construct the reflexive-transitive closure of a relation:
 \begin{code}
