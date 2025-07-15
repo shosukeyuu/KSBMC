@@ -32,7 +32,9 @@ type Valuation = IntMap [Proposition]
 type Relation = [(World,World)]
 
 data PlausibilityModel = PlM {worlds :: Universe, rel :: Relation, val :: Valuation}
-
+\end{code}
+To make the representation of the plausibility models more compact, the following functions construct the reflexive-transitive closure of a relation:
+\begin{code}
 rClosure :: PlausibilityModel -> PlausibilityModel
 rClosure m = PlM (worlds m) closure (val m) where
   closure = rel m ++ [(a,a) | a <- worlds m, (a,a) `notElem` rel m]
@@ -58,21 +60,63 @@ The semantic clauses of $K\Box$ are defined recursively as follows, where $\M$ i
 \M, s \vDash K \phi & \text{iff} & \M,t \vDash \phi \text{ for all } s \sim t \ . \\
 \end{array}
 \]
-Note that $\Box$ is the Kripke modality of the converSse plausibility relation $\geq$, due to our convention.
+Note that $\Box$ is the Kripke modality of the converse plausibility relation $\geq$, due to our convention. We write $\| \phi \|_\M$ to denote the set $\{s \in M \mid \M,s \vDash \phi\}$.
 
+To define the semantics of the dynamic modalities, we need the following three model transformers corresponding to the three modalities:
+For a plausibility model $\M = (M, \leq, V)$ and formula $\phi$, the models $\M^{!\phi}$, $\M^{\Uparrow\phi}$, and $\M^{\uparrow\phi}$ are defined as follows:
+
+$\M^{!\phi} = (M^{!\phi}, \leq^{!\phi}, V^{!\phi})$, where
+\begin{itemize}
+  \item $M^{!\phi} := \{s \in M \mid \M,s \vDash \phi\}$ ;
+  \item $\leq^{!\phi}$ is the restriction of $\leq$ to $M^{!\phi}$ ;
+  \item $V^{!\phi}(p) := V(p) \cup M^{!\phi}$.
+\end{itemize}
+
+$\M^{\Uparrow\phi} = (M^{\Uparrow\phi}, \leq^{\Uparrow\phi}, V^{\Uparrow\phi})$, where
+\begin{itemize}
+  \item $M^{\Uparrow\phi} := M$ ;
+  \item $s \leq^{\Uparrow\phi} t$ iff either of the following hold: 
+    \begin{itemize}
+      \item $s \leq t$, where both $s,t \in \| \phi \|_\M$, or both $s,t \notin \| \phi \|_\M$;
+      \item $\M,s \vDash \phi$ and $\M,t \not\vDash \phi$;
+    \end{itemize}
+  \item $V^{\Uparrow\phi}(p) := V(p)$.
+\end{itemize}
+
+$\M^{\uparrow\phi} = (M^{\uparrow\phi}, \leq^{\uparrow\phi}, V^{\uparrow\phi})$, where
+\begin{itemize}
+  \item $M^{\uparrow\phi} := M$ ;
+  \item $s \leq^{\uparrow\phi} t$ iff either of the following hold: 
+    \begin{itemize}
+      \item $s \leq t$, where both $s,t \notin \Min_\leq \|\phi\|_\M$;
+      \item $s \in \Min_\leq \|\phi\|_\M$;
+    \end{itemize}
+  \item $V^{\uparrow\phi}(p) := V(p)$.
+\end{itemize}
+The semantic clauses of the dynamic modalities are as follows:
+\[
+\begin{array}{l c l}
+\M, s \vDash [!\phi]\psi & \text{iff} & \M,s \not\vDash \phi \text{ or } \M^{!\phi},s \vDash \psi \ ;\\
+\M, s \vDash [\Uparrow\phi]\psi & \text{iff} & \M^{\Uparrow\phi},s \vDash \psi \ ; \\
+\M, s \vDash [\uparrow\phi]\psi & \text{iff} & \M^{\uparrow\phi},s \vDash \psi \ ; \\
+
+\end{array}
+\]
+The semantics are implemented as follows:
 \begin{code}
 pred :: Relation -> World -> [World]
 pred r s = [t | (t,s') <- r, s == s']
 
 (|=) :: (PlausibilityModel, World) -> KSBForm -> Bool
-(m,s) |= P n     = n `elem` (val m ! s)
-(m,s) |= Neg f   = not $ (m,s) |= f
-(m,s) |= Con f g = (m,s) |= f && (m,s) |= g
-(m,s) |= Box f   = all (\t -> (m,t) |= f) (pred (rel m) s)
-(m,_) |= K f     = all (\t -> (m,t) |= f) (worlds m)
-\end{code}
+(m,s) |= P n      = n `elem` (val m ! s)
+(m,s) |= Neg f    = not $ (m,s) |= f
+(m,s) |= Con f g  = (m,s) |= f && (m,s) |= g
+(m,s) |= Box f    = all (\t -> (m,t) |= f) (pred (rel m) s)
+(m,_) |= K f      = all (\t -> (m,t) |= f) (worlds m)
+(m,s) |= Ann f g  = (m,s) |= Neg f || (update m f, s) |= g
+(m,s) |= Rad f g  = (radical m f, s) |= g
+(m,s) |= Cons f g = (conservative m f, s) |= g
 
-\begin{code}
 update, radical, conservative :: PlausibilityModel -> KSBForm -> PlausibilityModel
 update m f = PlM newWorlds newRel newVal where
   newWorlds = [s | s <- worlds m, (m,s) |= f]
