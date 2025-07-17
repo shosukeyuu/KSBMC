@@ -20,7 +20,7 @@
 % be called something.lhs and also mentioned in the .cabal file.
 
 \section{Introduction}\label{sec:Introduction}
-This project implements an explicit model checker for the logic of knowledge and safe belief for a single agent, $K\Box$, as presented in \cite{baltagQualitativeTheoryDynamic2008}, together with three dynamic belief revision operators: update or truthful public announcement, radical upgrade, and conservative upgrade, which we will call $K\Box +$.
+This project implements an explicit model checker for the logic of knowledge and safe belief for a single agent, $K\Box$, as presented in \cite{baltagQualitativeTheoryDynamic2008}, together with three dynamic belief revision operators: update or truthful public announcement, radical upgrade, and conservative upgrade, which we will call $K\Box +$. We will use the language Haskell, which provides a clean way to model and manipulate abstract structures.
 
 \input{lib/Syntax.lhs}
 
@@ -30,7 +30,10 @@ This project implements an explicit model checker for the logic of knowledge and
 
 \input{test/simpletests.lhs}
 
-\input{Conclusion.tex}
+\section{Future Work}\label{sec:Conclusion}
+Currently, this model checker can only be operated using a code-editor and through the command line. In the future, it would be nice to add a UI to make it more accessible to those who are not well-versed in Haskell. 
+
+The full code can be found on \url{https://github.com/shosukeyuu/KSBMC}.
 
 \addcontentsline{toc}{section}{Bibliography}
 \bibliographystyle{alpha}
