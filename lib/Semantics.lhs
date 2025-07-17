@@ -15,11 +15,11 @@ For each plausibility relation, there is a corresponding epistemic indistinguish
 \begin{code}
 module Semantics where
 
+import Syntax
+
 import Data.List ( nub )
 import Data.IntMap (IntMap, (!), delete, restrictKeys, fromList) 
 import qualified Data.IntSet as Data.Intset
-
-import Syntax
 import Prelude hiding (pred)
 \end{code}
 }
@@ -117,6 +117,9 @@ pred r s = [t | (t,s') <- r, s == s']
 (m,s) |= Ann f g  = (m,s) |= Neg f || (update m f, s) |= g
 (m,s) |= Rad f g  = (radical m f, s) |= g
 (m,s) |= Cons f g = (conservative m f, s) |= g
+
+trueEverywhere :: PlausibilityModel -> KSBForm -> Bool
+trueEverywhere m f = all (\s -> (m,s) |= f ) (worlds m)
 
 update, radical, conservative :: PlausibilityModel -> KSBForm -> PlausibilityModel
 update m f = PlM newWorlds newRel newVal where

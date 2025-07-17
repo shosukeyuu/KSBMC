@@ -16,10 +16,16 @@ The other boolean operators $\vee, \rightarrow, \top, \bot$ can be defined in th
 \begin{code}
 dis, implies :: KSBForm -> KSBForm -> KSBForm
 dis f g = Neg $ Con (Neg f) (Neg g)
+
 implies f = dis (Neg f)
+
 top, bot :: KSBForm
 top = dis (P 0) (Neg $ P 0)
+
 bot = Neg top
+
+bigCon :: [KSBForm] -> KSBForm
+bigCon = foldr Con top
 \end{code}
 
 The \emph{conditional belief}, \emph{belief}, and \emph{strong belief} operators can be defined as follows:
