@@ -1,16 +1,18 @@
 \section{Semantics}\label{sec:Semantics}
 
-The semantics of $K\Box$ are given with respect to \emph{plausibility models}. A (single-agent) \emph{plausibility model} is a tuple $\M = (M, \leq, V)$, where
+The semantics of $K\Box +$ are given with respect to \emph{plausibility models}. A (single-agent) \emph{plausibility model} is a tuple $\M = (M, \leq, V)$, where
 \begin{itemize}
   \item $M$ is a set of states or possible worlds;
   \item $\leq$ is a well-preorder, that is a reflexive, transitive, and well-founded relation. Well-foundedness means that for any non-empty subset $P \subseteq M$, the set of minimal-elements
   \[\Min_\leq P := \{s \in P \mid s \leq s' \text{ for all } s' \in P\} \]
   is non-empty. Note that this also implies that $\leq$ is connected;
-  \item $V : Prop \to \mathcal{P}(M)$ is a valuation.
+  \item $V : \Prop \to \mathcal{P}(M)$ is a valuation.
 \end{itemize}
 We call $\leq$ the plausibility relation. Following the convention in \cite{baltagQualitativeTheoryDynamic2008}, we interpret $s \leq t$ as the state $s$ as being more or equally as plausible as $t$. 
 
 For each plausibility relation, there is a corresponding epistemic indistinguishability relation $\sim$, defined as the union between $\leq$ and it's converse $\geq$. That is, ${\sim} := {\leq} \cup {\geq}$. In the single-agent case, this reduces to the universal relation $s \sim t $ iff $s,t \in M$. 
+
+The type for plausibility models is implemented as follows, where we always name the states with integers.
 \hide{
 \begin{code}
 module Semantics where
@@ -70,7 +72,7 @@ $\M^{!\phi} = (M^{!\phi}, \leq^{!\phi}, V^{!\phi})$, where
 \begin{itemize}
   \item $M^{!\phi} := \{s \in M \mid \M,s \vDash \phi\}$ ;
   \item $\leq^{!\phi}$ is the restriction of $\leq$ to $M^{!\phi}$ ;
-  \item $V^{!\phi}(p) := V(p) \cup M^{!\phi}$.
+  \item $V^{!\phi}(p) := V(p) \cap M^{!\phi}$.
 \end{itemize}
 
 $\M^{\Uparrow\phi} = (M^{\Uparrow\phi}, \leq^{\Uparrow\phi}, V^{\Uparrow\phi})$, where
@@ -140,5 +142,5 @@ conservative m f = PlM newWorlds newRel newVal where
   newRel     = [(s,t) | (s,t) <- rel m, s `notElem` bestWorlds && t `notElem` bestWorlds] ++ [(s,t) | s <- bestWorlds, t <- newWorlds]
   newVal     = val m
   trueWorlds = [s | s <- worlds m, (m,s) |= f]
-  bestWorlds = [s | s <- trueWorlds, all (\t -> (s,t) `elem` rel m) newWorlds]
+  bestWorlds = [s | s <- trueWorlds, all (\t -> (s,t) `elem` rel m) trueWorlds]
 \end{code}
