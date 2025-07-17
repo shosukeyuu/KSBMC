@@ -1,10 +1,10 @@
-\section{Syntax of }\label{sec:Syntax}
+\section{Syntax}\label{sec:Syntax}
 
 The language of $K\Box+$ is defined over a set of propositional variables $\Prop$:
 \[\phi ::= p \mid \neg \phi \mid \phi \wedge \phi \mid \Box \phi \mid K \phi \mid [!\phi] \phi \mid [\Uparrow \phi] \phi \mid [\uparrow \phi] \phi\ ,\]
 where $p$ is taken from a set of propositional variables. 
 
-Below is the implementation of the syntax of $K\Box$, where we index the propositional variables with integers:
+Below is the implementation of the syntax of $K\Box +$, where we index the propositional variables with integers:
 \begin{code}
 module Syntax where
 
@@ -23,9 +23,6 @@ top, bot :: KSBForm
 top = dis (P 0) (Neg $ P 0)
 
 bot = Neg top
-
-bigCon :: [KSBForm] -> KSBForm
-bigCon = foldr Con top
 \end{code}
 
 The \emph{conditional belief}, \emph{belief}, and \emph{strong belief} operators can be defined as follows:
