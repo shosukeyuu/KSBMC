@@ -1,16 +1,16 @@
 \documentclass[12pt,a4paper]{article}
 \input{latexmacros.tex}
 
-\title{My Report}
+\title{Model Checker for the Logic of Knowledge and Safe Belief}
 \author{Simon Chiu}
 \date{\today}
-\hypersetup{pdfauthor={Me}, pdftitle={Model Checker for }}
+\hypersetup{pdfauthor={Simon Chiu}, pdftitle={Model Checker for the Logic of Knowledge and Safe Belief}}
 
 \begin{document}
 
 \maketitle
 
-\vfill
+\newpage
 
 \tableofcontents
 
@@ -31,7 +31,7 @@ This project implements an explicit model checker for the logic of knowledge and
 \input{test/simpletests.lhs}
 
 \section{Future Work}\label{sec:Conclusion}
-Currently, this model checker can only be operated using a code-editor and through the command line. In the future, it would be nice to add a UI to make it more accessible to those who are not well-versed in Haskell. 
+Currently, this model checker only implements three dynamic belief revision operators. Expanding this by implementing the full logic of doxastic actions, which includes the action-priority update, would allow this to be used for a wider range of models. Also, as this model checker can only be operated using a code-editor and through the command line, it would be nice to add a UI to make it more accessible to those who are not well-versed in Haskell. 
 
 The full code can be found on \url{https://github.com/shosukeyuu/KSBMC}.
 
