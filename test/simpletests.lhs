@@ -6,12 +6,10 @@ We now perform static tests on two example models in \ref{sec:Examples} using th
 \begin{code}
 module Main where
 
-import Syntax
 import Semantics
 import Examples
 
 import Test.Hspec
-import Test.QuickCheck
 \end{code}
 }
 

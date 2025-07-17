@@ -20,7 +20,7 @@ module Semantics where
 import Syntax
 
 import Data.List ( nub )
-import Data.IntMap (IntMap, (!), delete, restrictKeys, fromList) 
+import Data.IntMap (IntMap, (!), restrictKeys) 
 import qualified Data.IntSet as Data.Intset
 import Prelude hiding (pred)
 \end{code}

@@ -21,13 +21,6 @@ dependencies:
 library:
   source-dirs: lib
 
-executables:
-  myprogram:
-    main: Main.lhs
-    source-dirs: exec
-    dependencies:
-      - KSBMC
-
 tests:
   simpletests:
     main: simpletests.lhs

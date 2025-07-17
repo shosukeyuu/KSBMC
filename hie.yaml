@@ -3,11 +3,5 @@ cradle:
     - path: "./lib"
       component: "KSBMC:lib"
 
-    - path: "./exec/Main.lhs"
-      component: "KSBMC:exe:myprogram"
-
-    - path: "./exec/Paths_KSBMC.hs"
-      component: "KSBMC:exe:myprogram"
-
     - path: "./test"
       component: "KSBMC:test:simpletests"
